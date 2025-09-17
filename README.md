@@ -1,1 +1,0 @@
-# SomeTky.github.io
