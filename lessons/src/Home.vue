@@ -4,6 +4,8 @@
     <div class="button-container">
       <button class="btn btn-primary" @click="showLessons">课表</button>
       <button class="btn btn-secondary" @click="showTimeTable">时间表</button>
+      <button class="btn btn-primary" @click="toOtherWebsite('http://yjskq.xjtu.edu.cn')">考勤系统</button>
+
     </div>
   </div>
 </template>
@@ -20,6 +22,10 @@ function showLessons() {
 
 function showTimeTable() {
     router.push("/timetable")
+}
+
+function toOtherWebsite(url) {
+  location.assign(url);
 }
 
 </script>
