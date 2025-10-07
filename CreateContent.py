@@ -97,7 +97,7 @@ def main():
     ]
     # ==========================
 
-    output_file = ".directory_structure.json"
+    output_file = "directory_structure.json"
 
     if not base_path:
         print("❌ 错误：未提供有效路径")
