@@ -58,10 +58,14 @@ def build_directory_structure(base_path: str, ignore_paths=None) -> dict:
                 url = 'https://sometky.github.io/notes/' + str(rel_path).replace(os.sep, '/') # 这里是文件的url，正式环境记得更改为github路径
 
                 if item.is_dir():
-                    result[name] = {
-                        "type": "fold",
-                        "content": _scan(item)
-                    }
+                    # 递归扫描子目录
+                    sub_content = _scan(item)
+                    # 只有当子目录内容不为空时才添加
+                    if sub_content:
+                        result[name] = {
+                            "type": "fold",
+                            "content": sub_content
+                        }
                 elif item.is_file():
                     # 只处理txt文件
                     if name.lower().endswith('.txt'):
@@ -85,7 +89,7 @@ def build_directory_structure(base_path: str, ignore_paths=None) -> dict:
 
 def main():
     # ========== 配置区 ==========
-    base_path = "./notes"
+    base_path = "C:/Users/qiuyy/Desktop/SomeTky.github.io/notes"
 
     # 👇 在这里添加要忽略的路径（相对于 base_path 或绝对路径）
     ignore_paths = [
@@ -93,7 +97,7 @@ def main():
     ]
     # ==========================
 
-    output_file = "./directory_structure.json"
+    output_file = "../tkyblog/src/content/directory_structure.json"
 
     if not base_path:
         print("❌ 错误：未提供有效路径")
