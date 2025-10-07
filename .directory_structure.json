@@ -1,0 +1,142 @@
+{
+  "Linux系统开发": {
+    "type": "fold",
+    "content": {
+      "FPGA.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/Linux系统开发/FPGA.txt",
+        "time": "20250919"
+      },
+      "gdb.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/Linux系统开发/gdb.txt",
+        "time": "20250810"
+      },
+      "gnu.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/Linux系统开发/gnu.txt",
+        "time": "20250810"
+      },
+      "Linux系统开发.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/Linux系统开发/Linux系统开发.txt",
+        "time": "20250824"
+      },
+      "nginx简单部署及跨域处理.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/Linux系统开发/nginx简单部署及跨域处理.txt",
+        "time": "20250919"
+      }
+    }
+  },
+  "Readme.txt": {
+    "type": "file",
+    "url": "https://sometky.github.io/notes/Readme.txt",
+    "time": "20250926"
+  },
+  "其他": {
+    "type": "fold",
+    "content": {
+      "备忘录.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/其他/备忘录.txt",
+        "time": "20250926"
+      },
+      "算法.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/其他/算法.txt",
+        "time": "20250919"
+      }
+    }
+  },
+  "前端": {
+    "type": "fold",
+    "content": {
+      "Vue3.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/前端/Vue3.txt",
+        "time": "20250926"
+      }
+    }
+  },
+  "引擎": {
+    "type": "fold",
+    "content": {
+      "BlenderShortcut.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/引擎/BlenderShortcut.txt",
+        "time": "20250810"
+      },
+      "ue5_sth.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/引擎/ue5_sth.txt",
+        "time": "20250810"
+      },
+      "unity.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/引擎/unity.txt",
+        "time": "20250810"
+      }
+    }
+  },
+  "机器学习": {
+    "type": "fold",
+    "content": {
+      "prompt.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/机器学习/prompt.txt",
+        "time": "20250926"
+      },
+      "图像处理中的通道的概念(aigc).txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/机器学习/图像处理中的通道的概念(aigc).txt",
+        "time": "20250927"
+      },
+      "强化学习.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/机器学习/强化学习.txt",
+        "time": "20250919"
+      },
+      "形象理解DDPG.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/机器学习/形象理解DDPG.txt",
+        "time": "20250926"
+      }
+    }
+  },
+  "编程语言": {
+    "type": "fold",
+    "content": {
+      "c++.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/编程语言/c++.txt",
+        "time": "20250919"
+      },
+      "python.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/编程语言/python.txt",
+        "time": "20250919"
+      }
+    }
+  },
+  "运维测试": {
+    "type": "fold",
+    "content": {
+      "git.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/运维测试/git.txt",
+        "time": "20250919"
+      },
+      "vim.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/运维测试/vim.txt",
+        "time": "20250919"
+      },
+      "WindowsCmd.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/运维测试/WindowsCmd.txt",
+        "time": "20250919"
+      }
+    }
+  }
+}
