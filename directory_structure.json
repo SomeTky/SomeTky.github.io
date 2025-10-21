@@ -69,6 +69,16 @@
       }
     }
   },
+  "哲学": {
+    "type": "fold",
+    "content": {
+      "自然辩证法中问题的异化是什么？.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/哲学/自然辩证法中问题的异化是什么？.txt",
+        "time": "20251021"
+      }
+    }
+  },
   "引擎": {
     "type": "fold",
     "content": {
