@@ -124,6 +124,16 @@
       }
     }
   },
+  "简历": {
+    "type": "fold",
+    "content": {
+      "resume.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/简历/resume.txt",
+        "time": "20251028"
+      }
+    }
+  },
   "编程语言": {
     "type": "fold",
     "content": {
