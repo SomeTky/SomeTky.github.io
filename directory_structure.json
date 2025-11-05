@@ -52,6 +52,11 @@
         "url": "https://sometky.github.io/notes/其他/备忘录.txt",
         "time": "20250926"
       },
+      "并行计算.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/其他/并行计算.txt",
+        "time": "20251105"
+      },
       "算法.txt": {
         "type": "file",
         "url": "https://sometky.github.io/notes/其他/算法.txt",
@@ -146,6 +151,11 @@
         "type": "file",
         "url": "https://sometky.github.io/notes/编程语言/python.txt",
         "time": "20250919"
+      },
+      "yield_python.txt": {
+        "type": "file",
+        "url": "https://sometky.github.io/notes/编程语言/yield_python.txt",
+        "time": "20251030"
       }
     }
   },
