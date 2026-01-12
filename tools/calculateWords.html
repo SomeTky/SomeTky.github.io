@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字统计工具</title>
+</head>
+<body>
+    <h1>一共有：<span id="wordCount">0</span></h1>
+
+    <textarea id="inputer">
+        
+    </textarea>
+</body>
+</html>
+
+
+<script>
+
+    const wordCount = document.getElementById("wordCount");
+    const inputer = document.getElementById("inputer");
+
+    function getWordCount() {
+        let text = inputer.value;
+        let count = 0;
+        let inEnglishWord = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const code = char.charCodeAt(0);
+
+            // 判断是否为中文字符或中文标点（大致范围）
+            if (
+                (code >= 0x4e00 && code <= 0x9fff) ||      // CJK Unified Ideographs
+                (code >= 0x3000 && code <= 0x303f) ||      // CJK Symbols and Punctuation
+                (code >= 0xff00 && code <= 0xffef)         // Fullwidth ASCII variants (全角)
+            ) {
+                count++;
+                inEnglishWord = false;
+            }
+            // 英文、数字、常见连接符（构成单词）
+            else if (/[a-zA-Z0-9_'-]/.test(char)) {
+                if (!inEnglishWord) {
+                    count++;
+                    inEnglishWord = true;
+                }
+            }
+            // 其他符号（如半角标点 . , ! ? 等）通常不单独计字，但若夹在英文中应属于单词
+            // 例如 "e-mail@domain.com" 应算 1 个词
+            else if (/[@.]/.test(char) && inEnglishWord) {
+                // 继续当前单词，不新增计数
+                continue;
+            }
+            else {
+                // 空格、换行、或其他分隔符：结束当前英文单词
+                inEnglishWord = false;
+            }
+        }
+
+        return count;
+    }
+
+    inputer.addEventListener('change', () => {
+        let tempCount = getWordCount();
+        wordCount.textContent = tempCount.toString();
+    })
+
+
+</script>
+
+<style>
+
+</style>
