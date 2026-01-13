@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文本替换工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 25px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        /* 替换设置区 */
+        .replace-settings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .replace-settings input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 140px;
+            text-align: center;
+        }
+
+        .replace-settings button {
+            padding: 10px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .replace-settings button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 指示灯样式 */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #dc3545;
+            transition: background-color 0.3s ease;
+        }
+
+        .status-indicator.valid {
+            background-color: #28a745;
+        }
+
+        /* 文本输入输出区 */
+        .text-area-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .text-area-group textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .text-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        /* 特殊字符区 */
+        .special-symbol {
+            text-align: center;
+        }
+
+        .special-symbol .tiptext {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .special-symbol button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .special-symbol button:hover {
+            background-color: #218838;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 500px) {
+            .replace-settings input {
+                width: 120px;
+                font-size: 13px;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>文本替换工具</h1>
+
+        <div class="section">
+            <div class="replace-settings">
+                <input type="text" id="target" placeholder="被替换内容" title="支持单个或多个字符" />
+                <input type="text" id="newsymbol" placeholder="替换为内容" />
+                <div class="status-indicator" id="statusIndicator"></div>
+                <!-- <button class="test" onclick="test()">Test</button> -->
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="text-label">原始文本</div>
+            <textarea id="inputContent" placeholder="在此输入原始文本..."></textarea>
+
+            <div class="text-label">替换结果</div>
+            <textarea id="showContent" placeholder="替换结果将显示在这里..." readonly></textarea>
+        </div>
+
+        <div class="section special-symbol">
+            <span class="tiptext">点击按钮复制特殊字符</span>
+            <button onclick="smTab()">Tap</button>
+        </div>
+    </div>
+
+    <script>
+        const inputTarget = document.getElementById("target");
+        const newsymbol = document.getElementById("newsymbol");
+        const inputArea = document.getElementById("inputContent");
+        const showArea = document.getElementById("showContent");
+        const statusIndicator = document.getElementById("statusIndicator");
+
+        
+
+        // 为输入框添加事件监听器
+        inputTarget.addEventListener('input', updateStatusIndicator);
+        newsymbol.addEventListener('input', updateStatusIndicator);
+        // 初始检查
+        updateStatusIndicator();
+        // 为输入框添加事件监听器
+        inputArea.addEventListener('input', updateShowArea);
+
+
+
+        function test() {
+            console.log(inputTarget.value.charCodeAt(0));
+            console.log(newsymbol.value.charCodeAt(0));
+        }
+
+
+        function smTab() {
+            copyTextToClipboard(String.fromCharCode(9));
+        }
+
+        async function copyTextToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch (err) {
+                alert("复制失败");
+            }
+        }
+
+        function replaceSymbol(text, targetSymbol, newSymbol) {
+            return text
+                .split('')                     // 将字符串转为字符数组
+                .map(char => char === targetSymbol ? newSymbol : char) // 逐字符判断替换
+                .join('');                     // 合并回字符串
+        }
+
+        function updateShowArea() {
+            showArea.value = replaceSymbol(inputArea.value, inputTarget.value, newsymbol.value);
+        }
+
+        // 检查输入框内容并更新指示灯状态
+        function updateStatusIndicator() {
+            if (inputTarget.value && newsymbol.value) {
+                statusIndicator.classList.add('valid');
+            } else {
+                statusIndicator.classList.remove('valid');
+            }
+        }
+    </script>
+</body>
+</html>

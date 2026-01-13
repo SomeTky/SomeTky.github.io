@@ -1,73 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>文字统计工具</title>
-</head>
-<body>
-    <h1>一共有：<span id="wordCount">0</span></h1>
-
-    <textarea id="inputer">
-        
-    </textarea>
-</body>
-</html>
-
-
-<script>
-
-    const wordCount = document.getElementById("wordCount");
-    const inputer = document.getElementById("inputer");
-
-    function getWordCount() {
-        let text = inputer.value;
-        let count = 0;
-        let inEnglishWord = false;
-
-        for (let i = 0; i < text.length; i++) {
-            const char = text[i];
-            const code = char.charCodeAt(0);
-
-            // 判断是否为中文字符或中文标点（大致范围）
-            if (
-                (code >= 0x4e00 && code <= 0x9fff) ||      // CJK Unified Ideographs
-                (code >= 0x3000 && code <= 0x303f) ||      // CJK Symbols and Punctuation
-                (code >= 0xff00 && code <= 0xffef)         // Fullwidth ASCII variants (全角)
-            ) {
-                count++;
-                inEnglishWord = false;
-            }
-            // 英文、数字、常见连接符（构成单词）
-            else if (/[a-zA-Z0-9_'-]/.test(char)) {
-                if (!inEnglishWord) {
-                    count++;
-                    inEnglishWord = true;
-                }
-            }
-            // 其他符号（如半角标点 . , ! ? 等）通常不单独计字，但若夹在英文中应属于单词
-            // 例如 "e-mail@domain.com" 应算 1 个词
-            else if (/[@.]/.test(char) && inEnglishWord) {
-                // 继续当前单词，不新增计数
-                continue;
-            }
-            else {
-                // 空格、换行、或其他分隔符：结束当前英文单词
-                inEnglishWord = false;
-            }
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        return count;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-    inputer.addEventListener('change', () => {
-        let tempCount = getWordCount();
-        wordCount.textContent = tempCount.toString();
-    })
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+        }
 
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
 
-</script>
+        .count-display {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: #e9f7ef;
+            border-radius: 8px;
+            color: #27ae60;
+            border: 1px solid #d5e8d4;
+        }
 
-<style>
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            font-size: 16px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
 
-</style>
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        /* 响应式：小屏设备优化 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .count-display {
+                font-size: 18px;
+            }
+            textarea {
+                font-size: 16px; /* 防止 iOS 缩放 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>文字统计工具</h1>
+        <div class="count-display">
+            一共有：<span id="wordCount">0</span> 字/词
+        </div>
+        <textarea id="inputer" placeholder="请输入中英文混合文本，系统将自动统计：中文按字，英文按单词"></textarea>
+    </div>
+
+    <script>
+        const wordCountEl = document.getElementById("wordCount");
+        const inputer = document.getElementById("inputer");
+
+        function getWordCount() {
+            let text = inputer.value;
+            let count = 0;
+            let inEnglishWord = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const code = char.charCodeAt(0);
+
+                // 中文字符、中文标点、全角符号 → 每个算 1 字
+                if (
+                    (code >= 0x4e00 && code <= 0x9fff) ||      // CJK 汉字
+                    (code >= 0x3000 && code <= 0x303f) ||      // CJK 符号与标点
+                    (code >= 0xff00 && code <= 0xffef)         // 全角 ASCII 及符号
+                ) {
+                    count++;
+                    inEnglishWord = false;
+                }
+                // 英文单词构成字符（字母、数字、连字符、下划线、撇号）
+                else if (/[a-zA-Z0-9_'-]/.test(char)) {
+                    if (!inEnglishWord) {
+                        count++;
+                        inEnglishWord = true;
+                    }
+                }
+                // 特殊连接符（如 . @）若在英文单词中，不中断单词
+                else if (/[@.]/.test(char) && inEnglishWord) {
+                    continue;
+                }
+                // 其他字符（空格、换行、标点等）→ 结束当前英文单词
+                else {
+                    inEnglishWord = false;
+                }
+            }
+
+            return count;
+        }
+
+        // 使用 input 事件实现实时统计（比 change 更灵敏）
+        inputer.addEventListener('input', () => {
+            const count = getWordCount();
+            wordCountEl.textContent = count;
+        });
+    </script>
+</body>
+</html>
