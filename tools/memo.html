@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地记事本</title>
+    <style>
+        :root{
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --muted:#6b7280;
+            --accent:#2563eb;
+            --text:#0f172a;
+            --radius:12px;
+            --glass: rgba(255,255,255,0.6);
+        }
+        /* 主题切换（纯 CSS） */
+        #theme-toggle{display:none}
+        #theme-toggle:checked ~ .content{
+            --bg: #0b1220;
+            --panel:#0f1724;
+            --muted:#9aa4b2;
+            --accent:#60a5fa;
+            --text:#e6eef8;
+            --glass: rgba(255,255,255,0.03);
+        }
+
+        *{box-sizing:border-box}
+        html,body{height:100%;margin:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,var(--bg),#eaf0fb);color:var(--text)}
+
+        .container{max-width:1100px;margin:36px auto;padding:20px}
+
+        .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+        .brand{display:flex;align-items:center;gap:12px}
+        .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7dd3fc);box-shadow:0 6px 18px rgba(37,99,235,0.12);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+        h1{font-size:20px;margin:0}
+        .sub{color:var(--muted);font-size:13px}
+
+        .controls{display:flex;align-items:center;gap:12px}
+        .theme-label{cursor:pointer;padding:8px 12px;border-radius:999px;background:var(--panel);box-shadow:0 2px 6px rgba(2,6,23,0.06);color:var(--muted);font-size:13px}
+
+        .content{background:transparent}
+        .memoarea{display:grid;grid-template-columns:1fr 360px;gap:18px}
+
+        .panel{background:var(--panel);border-radius:var(--radius);padding:16px;box-shadow:0 6px 24px rgba(11,22,40,0.06)}
+
+        .memolist{display:flex;flex-direction:column;gap:12px;max-height:600px;overflow-y:auto;overflow-x:hidden}
+        .memo{padding:14px;border-radius:10px;background:linear-gradient(180deg,var(--glass),transparent);border:1px solid rgba(15,23,42,0.04);position:relative} .memo .complete-btn{position:absolute;top:14px;right:14px;padding:6px 10px;border-radius:8px;border:0;background:var(--accent);color:white;cursor:pointer;font-size:12px;opacity:0;transition:opacity 0.3s ease} .memo:hover .complete-btn{opacity:1}
+        .memo h3{margin:0 0 6px 0;font-size:15px}
+        .meta{color:var(--muted);font-size:12px}
+
+        .addmemoinput form{display:flex;flex-direction:column;gap:10px}
+        textarea{min-height:120px;resize:vertical;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:transparent;color:var(--text);font-size:14px}
+        .row{display:flex;gap:8px;align-items:center}
+        .btn{padding:10px 12px;border-radius:10px;border:0;background:var(--accent);color:white;cursor:pointer}
+        .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:var(--text)}
+
+        .tips{margin-top:14px;color:var(--muted);font-size:13px}
+
+        @media (max-width:900px){
+            .memoarea{grid-template-columns:1fr}
+            .addmemoinput{order:2}
+            .memolist{max-height:400px}
+        }
+    </style>
+    
+</head>
+<body>
+    <input type="checkbox" id="theme-toggle" aria-hidden>
+    <div class="container">
+        <div class="header">
+            <div class="brand">
+                <div class="logo">记</div>
+                <div>
+                    <h1>本地记事本</h1>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="memoarea">
+                <div id="memoList" class="panel memolist" aria-live="polite">
+                    <!-- 新的笔记添加在这里 -->
+                </div>
+
+                <aside class="panel addmemoinput">
+                    <h3 style="margin-top:0">新增笔记</h3>
+                    <form action="#" onsubmit="return false;">
+                        <label class="row" style="flex-direction:column;align-items:flex-start">
+                            <span class="sub" >标题</span>
+                            <input id="areaTitle" type="text" name="title" placeholder="填写标题" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:transparent;color:var(--text)">
+                        </label>
+ 
+                        <label class="row" style="flex-direction:column;align-items:flex-start">
+                            <span class="sub">内容</span>
+                            <textarea id="areaContent" name="content" placeholder="这里输入笔记内容"></textarea>
+                        </label>
+
+                        <div class="row" style="justify-content:space-between">
+                            <div style="color:var(--muted);font-size:13px">数据保存在浏览器缓存，请留意</div>
+                            <div style="display:flex;gap:8px">
+                                <button id="btnClear" class="btn ghost" type="reset">清空</button>
+                                <button id="btnSave" class="btn" type="submit">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </aside>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    const areaTitle = document.getElementById("areaTitle");
+    const areaContent = document.getElementById("areaContent");
+    const btnSave = document.getElementById("btnSave");
+    const btnClear = document.getElementById("btnClear");
+    const memoList = document.getElementById("memoList");
+
+
+
+
+
+
+    /////////////页面加载时事件//////////////////////////////////////
+    window.addEventListener("load", function() {
+        getStorageAndDisplay();
+    });
+
+
+    ////在这里添加事件监听//////////////////////////////////////////////////////
+    btnSave.addEventListener("click", event_button_save);
+    btnClear.addEventListener("click", clearForm);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////
+
+    function event_button_save() {
+        let memoTitle = areaTitle.value.trim();
+        let memoContent = areaContent.value.trim();
+        if (memoTitle === "") {
+            alert("请填写标题");
+            return;
+        }
+        let memoTime = getCurrentTile();
+        addMemo(memoTitle, memoContent, memoTime);
+        getStorageAndDisplay();
+        clearForm();
+    }
+
+    function clearForm() {
+        areaTitle.value = "";
+        areaContent.value = "";
+    }
+
+    //获取当前时间
+    function getCurrentTile() {
+        let currentTime = new Date();
+        let year = currentTime.getFullYear();
+        let month = currentTime.getMonth() + 1;
+        let day = currentTime.getDate();
+        let hour = currentTime.getHours();
+        let minute = currentTime.getMinutes();
+        return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+
+    //////////////////////////localStorage模块代码在这里////////////////////////////////////
+    function addMemo(memoTitle, memoContent, memoTime) {
+        let hashCode = localStorage.getItem('hashCode') || 0;
+        let memoTable = JSON.parse(localStorage.getItem("memoTable")) || {};
+        hashCode++;
+        memoTable[hashCode] = {
+            title: memoTitle,
+            content: memoContent,
+            time: memoTime
+        };
+        localStorage.setItem('hashCode', hashCode);
+        localStorage.setItem('memoTable', JSON.stringify(memoTable));
+    }
+    
+    function getStorageAndDisplay() {
+        //先清空
+        clearView();
+        let memotable = JSON.parse(localStorage.getItem("memoTable")) || {};
+        for (let key in memotable) {
+            let memo = memotable[key];
+            viewAddOne(key, memo.title, memo.content, memo.time);
+        }
+    }
+
+    function clearView() {
+        memoList.innerHTML = "";
+    }
+
+
+
+    /////////////显示逻辑////////////////////////////////////////////////
+    //在memoList中添加一个新的笔记
+    function viewAddOne(index, memoTitle, memoContent, memoTime) {
+        let memoItem = document.createElement("div");
+        memoItem.classList.add("memo");
+        memoItem.innerHTML = `
+            <h3>${memoTitle}</h3>
+            <div class="meta">${memoTime}</div>
+            <p>${memoContent}</p>
+            <button class="complete-btn" data-index="${index}">完成</button>
+        `;
+        memoItem.dataset.index = index;
+
+        // 添加完成按钮点击事件
+        const completeBtn = memoItem.querySelector('.complete-btn');
+        completeBtn.addEventListener('click', function() {
+            const memoIndex = this.dataset.index;
+            completeMemo(memoIndex);
+        });
+        
+        memoList.appendChild(memoItem);
+    }
+
+    // 完成笔记的函数
+    function completeMemo(index) {
+        let memoTable = JSON.parse(localStorage.getItem("memoTable")) || {};
+        if (memoTable[index]) {
+            // 这里可以根据需求处理完成的逻辑，比如删除或标记完成
+            // 这里我选择删除完成的笔记
+            delete memoTable[index];
+            localStorage.setItem('memoTable', JSON.stringify(memoTable));
+            // 重新显示笔记列表
+            getStorageAndDisplay();
+        }
+    }
+</script>
