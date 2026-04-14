@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>本地记事本</title>
+    <title>本地记事本 - 支持置顶</title>
     <style>
         :root{
             --bg: #f5f7fb;
@@ -14,7 +14,6 @@
             --radius:12px;
             --glass: rgba(255,255,255,0.6);
         }
-        /* 主题切换（纯 CSS） */
         #theme-toggle{display:none}
         #theme-toggle:checked ~ .content{
             --bg: #0b1220;
@@ -24,46 +23,42 @@
             --text:#e6eef8;
             --glass: rgba(255,255,255,0.03);
         }
-
         *{box-sizing:border-box}
         html,body{height:100%;margin:0;font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(180deg,var(--bg),#eaf0fb);color:var(--text)}
-
         .container{max-width:1100px;margin:36px auto;padding:20px}
-
         .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
         .brand{display:flex;align-items:center;gap:12px}
         .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7dd3fc);box-shadow:0 6px 18px rgba(37,99,235,0.12);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
         h1{font-size:20px;margin:0}
         .sub{color:var(--muted);font-size:13px}
-
         .controls{display:flex;align-items:center;gap:12px}
         .theme-label{cursor:pointer;padding:8px 12px;border-radius:999px;background:var(--panel);box-shadow:0 2px 6px rgba(2,6,23,0.06);color:var(--muted);font-size:13px}
-
         .content{background:transparent}
         .memoarea{display:grid;grid-template-columns:1fr 360px;gap:18px}
-
         .panel{background:var(--panel);border-radius:var(--radius);padding:16px;box-shadow:0 6px 24px rgba(11,22,40,0.06)}
-
         .memolist{display:flex;flex-direction:column;gap:12px;max-height:600px;overflow-y:auto;overflow-x:hidden}
-        .memo{padding:14px;border-radius:10px;background:linear-gradient(180deg,var(--glass),transparent);border:1px solid rgba(15,23,42,0.04);position:relative} .memo .complete-btn{position:absolute;top:14px;right:14px;padding:6px 10px;border-radius:8px;border:0;background:var(--accent);color:white;cursor:pointer;font-size:12px;opacity:0;transition:opacity 0.3s ease} .memo:hover .complete-btn{opacity:1}
+        .memo{padding:14px;border-radius:10px;background:linear-gradient(180deg,var(--glass),transparent);border:1px solid rgba(15,23,42,0.04);position:relative; cursor: pointer; transition: all 0.1s ease;}
+        .memo:hover{background: rgba(37,99,235,0.05);}
+        .memo .action-buttons{position:absolute;top:14px;right:14px;display:flex;gap:8px;opacity:0;transition:opacity 0.3s ease;}
+        .memo:hover .action-buttons{opacity:1;}
+        .memo .action-btn{padding:6px 10px;border-radius:8px;border:0;cursor:pointer;font-size:12px;}
+        .complete-btn{background:var(--accent);color:white;}
+        .pin-btn{background:var(--panel);color:var(--text);border:1px solid rgba(15,23,42,0.1);}
         .memo h3{margin:0 0 6px 0;font-size:15px}
         .meta{color:var(--muted);font-size:12px}
-
         .addmemoinput form{display:flex;flex-direction:column;gap:10px}
         textarea{min-height:120px;resize:vertical;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:transparent;color:var(--text);font-size:14px}
         .row{display:flex;gap:8px;align-items:center}
         .btn{padding:10px 12px;border-radius:10px;border:0;background:var(--accent);color:white;cursor:pointer}
         .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:var(--text)}
-
         .tips{margin-top:14px;color:var(--muted);font-size:13px}
-
+        .editing-badge{font-size:12px;color:var(--accent);margin-left:8px;}
         @media (max-width:900px){
             .memoarea{grid-template-columns:1fr}
             .addmemoinput{order:2}
             .memolist{max-height:400px}
         }
     </style>
-    
 </head>
 <body>
     <input type="checkbox" id="theme-toggle" aria-hidden>
@@ -73,30 +68,25 @@
                 <div class="logo">记</div>
                 <div>
                     <h1>本地记事本</h1>
-                    
                 </div>
             </div>
         </div>
-
         <div class="content">
             <div class="memoarea">
                 <div id="memoList" class="panel memolist" aria-live="polite">
-                    <!-- 新的笔记添加在这里 -->
+                    <!-- 笔记列表 -->
                 </div>
-
                 <aside class="panel addmemoinput">
-                    <h3 style="margin-top:0">新增笔记</h3>
+                    <h3 style="margin-top:0">新增笔记 <span id="editHint" class="editing-badge"></span></h3>
                     <form action="#" onsubmit="return false;">
                         <label class="row" style="flex-direction:column;align-items:flex-start">
-                            <span class="sub" >标题</span>
+                            <span class="sub">标题</span>
                             <input id="areaTitle" type="text" name="title" placeholder="填写标题" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:transparent;color:var(--text)">
                         </label>
- 
                         <label class="row" style="flex-direction:column;align-items:flex-start">
                             <span class="sub">内容</span>
                             <textarea id="areaContent" name="content" placeholder="这里输入笔记内容"></textarea>
                         </label>
-
                         <div class="row" style="justify-content:space-between">
                             <div style="color:var(--muted);font-size:13px">数据保存在浏览器缓存，请留意</div>
                             <div style="display:flex;gap:8px">
@@ -109,138 +99,219 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+    <script>
+        // DOM 元素
+        const areaTitle = document.getElementById("areaTitle");
+        const areaContent = document.getElementById("areaContent");
+        const btnSave = document.getElementById("btnSave");
+        const btnClear = document.getElementById("btnClear");
+        const memoList = document.getElementById("memoList");
+        const editHint = document.getElementById("editHint");
 
-<script>
-    const areaTitle = document.getElementById("areaTitle");
-    const areaContent = document.getElementById("areaContent");
-    const btnSave = document.getElementById("btnSave");
-    const btnClear = document.getElementById("btnClear");
-    const memoList = document.getElementById("memoList");
+        // 全局编辑状态
+        let currentEditId = null;
 
-
-
-
-
-
-    /////////////页面加载时事件//////////////////////////////////////
-    window.addEventListener("load", function() {
-        getStorageAndDisplay();
-    });
-
-
-    ////在这里添加事件监听//////////////////////////////////////////////////////
-    btnSave.addEventListener("click", event_button_save);
-    btnClear.addEventListener("click", clearForm);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /////////////////////////////////////////////////////////////
-
-    function event_button_save() {
-        let memoTitle = areaTitle.value.trim();
-        let memoContent = areaContent.value.trim();
-        if (memoTitle === "") {
-            alert("请填写标题");
-            return;
+        // ========== 数据操作（基于数组，保证顺序） ==========
+        function getMemos() {
+            let memos = localStorage.getItem("memos");
+            if (memos) {
+                return JSON.parse(memos);
+            }
+            // 兼容旧的对象格式（如果有）
+            let oldTable = localStorage.getItem("memoTable");
+            if (oldTable) {
+                let obj = JSON.parse(oldTable);
+                let arr = [];
+                for (let key in obj) {
+                    arr.push({
+                        id: key,
+                        title: obj[key].title,
+                        content: obj[key].content,
+                        time: obj[key].time
+                    });
+                }
+                // 保存为新格式并清除旧数据
+                localStorage.setItem("memos", JSON.stringify(arr));
+                localStorage.removeItem("memoTable");
+                return arr;
+            }
+            return [];
         }
-        let memoTime = getCurrentTile();
-        addMemo(memoTitle, memoContent, memoTime);
-        getStorageAndDisplay();
-        clearForm();
-    }
 
-    function clearForm() {
-        areaTitle.value = "";
-        areaContent.value = "";
-    }
-
-    //获取当前时间
-    function getCurrentTile() {
-        let currentTime = new Date();
-        let year = currentTime.getFullYear();
-        let month = currentTime.getMonth() + 1;
-        let day = currentTime.getDate();
-        let hour = currentTime.getHours();
-        let minute = currentTime.getMinutes();
-        return `${year}-${month}-${day} ${hour}:${minute}`;
-    }
-
-    //////////////////////////localStorage模块代码在这里////////////////////////////////////
-    function addMemo(memoTitle, memoContent, memoTime) {
-        let hashCode = localStorage.getItem('hashCode') || 0;
-        let memoTable = JSON.parse(localStorage.getItem("memoTable")) || {};
-        hashCode++;
-        memoTable[hashCode] = {
-            title: memoTitle,
-            content: memoContent,
-            time: memoTime
-        };
-        localStorage.setItem('hashCode', hashCode);
-        localStorage.setItem('memoTable', JSON.stringify(memoTable));
-    }
-    
-    function getStorageAndDisplay() {
-        //先清空
-        clearView();
-        let memotable = JSON.parse(localStorage.getItem("memoTable")) || {};
-        for (let key in memotable) {
-            let memo = memotable[key];
-            viewAddOne(key, memo.title, memo.content, memo.time);
+        function saveMemos(memos) {
+            localStorage.setItem("memos", JSON.stringify(memos));
         }
-    }
 
-    function clearView() {
-        memoList.innerHTML = "";
-    }
+        function getNextId() {
+            let hashCode = localStorage.getItem("hashCode");
+            if (!hashCode) {
+                let memos = getMemos();
+                let maxId = 0;
+                memos.forEach(m => { if (Number(m.id) > maxId) maxId = Number(m.id); });
+                hashCode = maxId;
+            }
+            let next = Number(hashCode) + 1;
+            localStorage.setItem("hashCode", next);
+            return next;
+        }
 
+        // 新增笔记
+        function addMemo(memoTitle, memoContent, memoTime) {
+            let memos = getMemos();
+            let newId = getNextId();
+            memos.push({
+                id: newId,
+                title: memoTitle,
+                content: memoContent,
+                time: memoTime
+            });
+            saveMemos(memos);
+        }
 
+        // 更新笔记
+        function updateMemo(id, newTitle, newContent, newTime) {
+            let memos = getMemos();
+            let index = memos.findIndex(m => m.id == id);
+            if (index !== -1) {
+                memos[index] = { ...memos[index], title: newTitle, content: newContent, time: newTime };
+                saveMemos(memos);
+            }
+        }
 
-    /////////////显示逻辑////////////////////////////////////////////////
-    //在memoList中添加一个新的笔记
-    function viewAddOne(index, memoTitle, memoContent, memoTime) {
-        let memoItem = document.createElement("div");
-        memoItem.classList.add("memo");
-        memoItem.innerHTML = `
-            <h3>${memoTitle}</h3>
-            <div class="meta">${memoTime}</div>
-            <p>${memoContent}</p>
-            <button class="complete-btn" data-index="${index}">完成</button>
-        `;
-        memoItem.dataset.index = index;
+        // 删除笔记
+        function deleteMemo(id) {
+            let memos = getMemos();
+            let newMemos = memos.filter(m => m.id != id);
+            saveMemos(newMemos);
+        }
 
-        // 添加完成按钮点击事件
-        const completeBtn = memoItem.querySelector('.complete-btn');
-        completeBtn.addEventListener('click', function() {
-            const memoIndex = this.dataset.index;
-            completeMemo(memoIndex);
-        });
-        
-        memoList.appendChild(memoItem);
-    }
+        // 置顶笔记
+        function pinMemo(id) {
+            let memos = getMemos();
+            let index = memos.findIndex(m => m.id == id);
+            if (index > 0) {
+                let [target] = memos.splice(index, 1);
+                memos.unshift(target);
+                saveMemos(memos);
+                getStorageAndDisplay(); // 重新渲染
+            }
+        }
 
-    // 完成笔记的函数
-    function completeMemo(index) {
-        let memoTable = JSON.parse(localStorage.getItem("memoTable")) || {};
-        if (memoTable[index]) {
-            // 这里可以根据需求处理完成的逻辑，比如删除或标记完成
-            // 这里我选择删除完成的笔记
-            delete memoTable[index];
-            localStorage.setItem('memoTable', JSON.stringify(memoTable));
-            // 重新显示笔记列表
+        // ========== 视图渲染 ==========
+        function getStorageAndDisplay() {
+            clearView();
+            let memos = getMemos();
+            memos.forEach(memo => {
+                viewAddOne(memo.id, memo.title, memo.content, memo.time);
+            });
+        }
+
+        function clearView() {
+            memoList.innerHTML = "";
+        }
+
+        function viewAddOne(id, title, content, time) {
+            let memoItem = document.createElement("div");
+            memoItem.classList.add("memo");
+            memoItem.dataset.id = id;
+            memoItem.innerHTML = `
+                <h3>${escapeHtml(title)}</h3>
+                <div class="meta">${escapeHtml(time)}</div>
+                <p>${escapeHtml(content)}</p>
+                <div class="action-buttons">
+                    <button class="action-btn pin-btn" data-id="${id}">📌 置顶</button>
+                    <button class="action-btn complete-btn" data-id="${id}">✓ 完成</button>
+                </div>
+            `;
+            // 点击卡片内容（非按钮区域）进入编辑
+            memoItem.addEventListener('click', function(e) {
+                if (e.target.classList && (e.target.classList.contains('action-btn') || e.target.parentElement?.classList?.contains('action-buttons'))) {
+                    return;
+                }
+                loadMemoToForm(id, title, content);
+            });
+            // 置顶按钮
+            const pinBtn = memoItem.querySelector('.pin-btn');
+            pinBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                pinMemo(id);
+            });
+            // 完成按钮（删除）
+            const completeBtn = memoItem.querySelector('.complete-btn');
+            completeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                completeMemo(id);
+            });
+            memoList.appendChild(memoItem);
+        }
+
+        function loadMemoToForm(id, title, content) {
+            areaTitle.value = title;
+            areaContent.value = content;
+            currentEditId = id;
+            editHint.innerText = "（正在编辑）";
+            document.querySelector('.addmemoinput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function completeMemo(id) {
+            deleteMemo(id);
+            if (currentEditId == id) {
+                clearForm();
+            }
             getStorageAndDisplay();
         }
-    }
-</script>
+
+        function clearForm() {
+            areaTitle.value = "";
+            areaContent.value = "";
+            currentEditId = null;
+            editHint.innerText = "";
+        }
+
+        // 保存或更新
+        function event_button_save() {
+            let memoTitle = areaTitle.value.trim();
+            let memoContent = areaContent.value.trim();
+            if (memoTitle === "") {
+                alert("请填写标题");
+                return;
+            }
+            let memoTime = getCurrentTile();
+            if (currentEditId !== null) {
+                updateMemo(currentEditId, memoTitle, memoContent, memoTime);
+            } else {
+                addMemo(memoTitle, memoContent, memoTime);
+            }
+            getStorageAndDisplay();
+            clearForm();
+        }
+
+        function getCurrentTile() {
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = now.getMonth() + 1;
+            let day = now.getDate();
+            let hour = now.getHours();
+            let minute = now.getMinutes();
+            return `${year}-${month}-${day} ${hour}:${minute}`;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // 初始化
+        window.addEventListener("load", function() {
+            getStorageAndDisplay();
+        });
+        btnSave.addEventListener("click", event_button_save);
+        btnClear.addEventListener("click", clearForm);
+    </script>
+</body>
+</html>
