@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>💖 我有一个萌萌的宝宝 💌</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 让移动端体验更像卡片，不影响文字选择 */
+        }
+
+        p {
+            text-indent: 2em; /* 2em 表示缩进2个汉字字符宽度 */
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ffb7c5 0%, #ff9eb0 100%);
+            background-attachment: fixed;
+            font-family: 'Quicksand', 'Comic Neue', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 20px 16px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 飘浮的浪漫粒子 (爱心 & 小气球光晕) */
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 1.8rem;
+            opacity: 0.4;
+            animation: floatAround 8s infinite ease-in-out;
+        }
+
+        @keyframes floatAround {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+            50% { transform: translateY(-30px) rotate(10deg); opacity: 0.6; }
+            100% { transform: translateY(0px) rotate(0deg); opacity: 0.2; }
+        }
+
+        /* 主信件卡片 - 卡通信封风格 */
+        .valentine-letter {
+            position: relative;
+            z-index: 10;
+            max-width: 520px;
+            width: 100%;
+            margin: 0 auto;
+            background: #fffef7;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 220, 230, 0.4) 2%, transparent 2.5%);
+            background-size: 24px 24px;
+            border-radius: 56px 56px 64px 64px;
+            box-shadow: 0 25px 45px rgba(255, 80, 120, 0.25), 0 8px 18px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255,255,240,0.8);
+            backdrop-filter: blur(0px);
+            transition: transform 0.2s ease;
+            border: 2px solid #ffb7c2;
+        }
+
+        .valentine-letter:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 信纸内页装饰条 */
+        .letter-inner {
+            padding: 28px 22px 36px;
+            position: relative;
+        }
+
+        /* 碧琪标志气球装饰 (显眼c位) */
+        .cutie-mark-area {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .pinkie-balloon-badge {
+            background: #ffeef2;
+            border-radius: 120px;
+            padding: 8px 18px 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 18px #ffb7c555;
+            border: 2px solid #ff93aa;
+            backdrop-filter: blur(2px);
+        }
+
+        .badge-text {
+            font-weight: 800;
+            color: #d44b6b;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            box-shadow: inset 0 1px 2px #ffb7c2, 0 1px 2px white;
+        }
+
+        /* SVG 可爱标志 — 碧琪三个气球 */
+        .balloon-svg-container {
+            width: 85px;
+            height: 85px;
+            filter: drop-shadow(2px 6px 12px rgba(0,0,0,0.1));
+            transition: all 0.3s ease;
+        }
+        .balloon-svg-container:hover {
+            transform: scale(1.05) rotate(3deg);
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 情人节标题 */
+        .holiday-title {
+            text-align: center;
+            margin: 8px 0 6px;
+        }
+        .holiday-title h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff87a2, #ff5e7e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 8px rgba(255, 200, 210, 0.6);
+            letter-spacing: -0.5px;
+        }
+        .holiday-title p {
+            color: #e36b8b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: #fff0f3;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            margin-top: 8px;
+        }
+
+        /* 信件正文区域 (经典信笺风格) */
+        .letter-body {
+            background: #fffafc;
+            margin: 20px 0 18px;
+            padding: 24px 18px;
+            border-radius: 48px 28px 48px 28px;
+            box-shadow: inset 0 0 0 2px white, inset 0 0 0 4px #ffe2ea, 0 8px 18px rgba(211, 84, 112, 0.1);
+            position: relative;
+        }
+
+        .greeting {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #d14b6e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .greeting span {
+            background: #ffe2ea;
+            border-radius: 50px;
+            padding: 6px 12px;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .message-text {
+            color: #5e3a45;
+            font-weight: 500;
+            line-height: 1.55;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        .message-text p {
+            margin-bottom: 14px;
+        }
+        .message-text .highlight {
+            background: #ffe0e8;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-weight: 700;
+            color: #c54164;
+            display: inline-block;
+        }
+        .heart-emoji {
+            font-size: 1.2rem;
+            display: inline-block;
+            animation: heartbeat 1.2s infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1);}
+            50% { transform: scale(1.2);}
+        }
+
+        .signature {
+            margin-top: 20px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-top: 2px dashed #ffb7c5;
+            padding-top: 16px;
+            color: #e36b8b;
+        }
+        .signature .name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #ff728f;
+        }
+
+        /* 可爱小元素行 */
+        .mini-deco {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            font-size: 1.3rem;
+        }
+
+        /* 二次确认气球标志 (另一个碧琪彩蛋) 以及漂浮气球 */
+        .extra-balloons {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 18px 0 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .mini-balloon-icon {
+            background: #feeef2;
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #c24767;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(255, 120, 140, 0.2);
+        }
+        .balloon-emoji {
+            font-size: 1.2rem;
+        }
+
+        /* 浪漫落款日期 */
+        .date-love {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.75rem;
+            color: #cd7f96;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* 底部飘动心形背景 (自定义数量) */
+        .bg-love {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-love i {
+            position: absolute;
+            font-style: normal;
+            opacity: 0.3;
+            animation: riseLove 12s infinite linear;
+            font-size: 1rem;
+        }
+        @keyframes riseLove {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* 适配小屏幕 完美显示 */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px 32px;
+            }
+            .letter-inner {
+                padding: 20px 16px 28px;
+            }
+            .holiday-title h1 {
+                font-size: 1.8rem;
+            }
+            .greeting {
+                font-size: 1.3rem;
+            }
+            .message-text {
+                font-size: 0.92rem;
+            }
+            .balloon-svg-container {
+                width: 70px;
+                height: 70px;
+            }
+            .pinkie-balloon-badge {
+                padding: 5px 14px 5px 10px;
+            }
+            .badge-text {
+                font-size: 0.65rem;
+            }
+        }
+
+        /* 点缀小马宝莉风格闪闪星光 */
+        .sparkle {
+            position: absolute;
+            background: #ffea80;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: twinkle 1.5s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.3);}
+        }
+        
+        button, a {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 漂浮在背景中超浪漫爱心 + 气球氛围 -->
+<div class="bg-love" id="bgLove"></div>
+
+<!-- 主信件卡片 -->
+<div class="valentine-letter">
+    <div class="letter-inner">
+        
+        <!-- ★ 碧琪的可爱标志气球 大C位！ ★ -->
+        <div class="cutie-mark-area">
+            <div class="pinkie-balloon-badge">
+                <div class="balloon-svg-container">
+                    <!-- 手绘碧琪可爱标志三个气球 (两个蓝色一个黄色, 经典造型) -->
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 左蓝气球 (天蓝色) -->
+                        <circle cx="32" cy="48" r="16" fill="#7ACDF2" stroke="#FFB7C2" stroke-width="1.2"/>
+                        <ellipse cx="28" cy="43" rx="4" ry="3" fill="white" opacity="0.7"/>
+                        <!-- 气球绳子 -->
+                        <path d="M32 64 L28 78" stroke="#B96C5A" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- 右蓝色气球 -->
+                        <circle cx="68" cy="48" r="16" fill="#7ACDF2" stroke="#FFB7C2" stroke-width="1.2"/>
+                        <ellipse cx="64" cy="43" rx="4" ry="3" fill="white" opacity="0.7"/>
+                        <path d="M68 64 L72 78" stroke="#B96C5A" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- 中间黄色气球 略微抬高 -->
+                        <circle cx="50" cy="35" r="17" fill="#FCE570" stroke="#FFB7C2" stroke-width="1.2"/>
+                        <ellipse cx="45" cy="30" rx="4.5" ry="3.5" fill="white" opacity="0.7"/>
+                        <path d="M50 52 L50 78" stroke="#B96C5A" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- 可爱的蝴蝶结绳结汇聚点 -->
+                        <path d="M28 78 L50 78 L72 78" stroke="#E0896E" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                        <path d="M50 78 L46 84 M50 78 L54 84" stroke="#E0896E" stroke-width="2.2" stroke-linecap="round"/>
+                        <circle cx="50" cy="76.5" r="2.5" fill="#FFB28B"/>
+                        
+                        <!-- 添加小高光增强立体感 -->
+                        <circle cx="38" cy="44" r="2" fill="white" opacity="0.8"/>
+                        <circle cx="58" cy="44" r="2" fill="white" opacity="0.8"/>
+                        <circle cx="44" cy="31" r="2.2" fill="white" opacity="0.9"/>
+                    </svg>
+                </div>
+                <span class="badge-text">💖 Made with pinkie pie 💖</span>
+            </div>
+        </div>
+
+        <!-- 情人节标题区 -->
+        <div class="holiday-title">
+            <h1>💌 这是一个什么呀 💌</h1>
+            
+        </div>
+
+        <!-- 信件核心内容 -->
+        <div class="letter-body">
+            <div class="greeting">
+                世上最可爱最美丽的：
+                <span>神驹小甜心</span>
+            </div>
+            <div class="message-text">
+                <p>520快乐！</p>
+                <p>今天是咱们在一起的195天啦老婆，你看老婆，离200天还有5天，195里面有一个5，加起来就是两个5，所以是52，配上前面的19，就是“要久52”。空空的就是0，所以设置成不隐藏0，就变成了“要久520”。不愧是伟大的老婆，选的日子非常非常的意味深长，全知全能的老婆已经计算好了后面所有的日子，老婆一定是拉普拉斯的魔女。</p>
+                <p>其实不管是520还是其它节日，比起给老婆礼物，老公更想带着老婆出去，然后满足老婆的一切要求，不过暂时老婆还和老公没有住在一起还有诸多不便，在那天到来之前，还辛苦老婆啦。</p>
+                <p>请查收520~老公不在的日子也要好好生活呀~</p>
+                <p style="font-style: italic">tips:上面的气球点了就会爆炸！不可以！</p>
+            </div>
+            <div class="signature">
+                ✨ 永远爱你的<br>
+                <span class="name">圈圈</span>
+            </div>
+        </div>
+
+      
+        <div class="extra-balloons">
+            <div class="mini-balloon-icon">
+                <span class="balloon-emoji">🎈</span> 
+            </div>
+            <div class="mini-balloon-icon">
+                <span class="balloon-emoji">💗</span> 
+            </div>
+            <div class="mini-balloon-icon">
+                <span class="balloon-emoji">🎀</span> 
+            </div>
+        </div>
+
+        <!-- 重现一次缩小版气球标志 小彩蛋  -->
+        <div style="display: flex; justify-content: center; margin-top: 6px;">
+            <div style="width: 50px; opacity: 0.7;">
+                <svg viewBox="0 0 80 70" fill="none">
+                    <circle cx="20" cy="32" r="9" fill="#7ACDF2" />
+                    <circle cx="60" cy="32" r="9" fill="#7ACDF2" />
+                    <circle cx="40" cy="22" r="9.5" fill="#FCE570" />
+                    <path d="M20 41 L17 54 M60 41 L63 54 M40 31 L40 54" stroke="#E0896E" stroke-width="1.8" />
+                </svg>
+            </div>
+        </div>
+        
+        <div class="date-love">
+            💌 2026 · 520 · 保护 💌 <br>
+            “用碧琪的气球装满你的天空 ~”
+        </div>
+        <div class="mini-deco">
+            🎈🎀🍬🧁🎈
+        </div>
+    </div>
+</div>
+
+<script>
+    // 动态生成流动爱心/小气球光点，增加梦幻情人节氛围
+    const bgContainer = document.getElementById('bgLove');
+    const iconsList = ['❤️', '🎈', '💗', '🌸', '🎀', '💕', '🎈', '✨', '🍬', '🩷'];
+    
+    // 创建30个浮动元素 随机分布
+    for (let i = 0; i < 38; i++) {
+        const element = document.createElement('i');
+        const randomIcon = iconsList[Math.floor(Math.random() * iconsList.length)];
+        element.innerHTML = randomIcon;
+        const size = Math.floor(Math.random() * 20 + 12); // 12px~32px
+        element.style.fontSize = size + 'px';
+        element.style.left = Math.random() * 100 + '%';
+        element.style.animationDuration = Math.random() * 8 + 6 + 's'; // 6~14s
+        element.style.animationDelay = Math.random() * 10 + 's';
+        element.style.opacity = Math.random() * 0.4 + 0.15;
+        element.style.position = 'absolute';
+        element.style.bottom = '-50px';
+        element.style.zIndex = '0';
+        bgContainer.appendChild(element);
+    }
+
+    // 额外加一些会闪烁的小星星 (可爱标志风格)
+    const sparklePositions = [
+        { top: '12%', left: '5%' }, { top: '18%', left: '90%' }, { top: '45%', left: '8%' },
+        { top: '72%', left: '85%' }, { top: '88%', left: '20%' }, { top: '33%', left: '78%' },
+        { top: '62%', left: '15%' }, { top: '28%', left: '45%' }, { top: '80%', left: '92%' },
+        { top: '53%', left: '68%' }
+    ];
+    sparklePositions.forEach(pos => {
+        const star = document.createElement('div');
+        star.classList.add('sparkle');
+        star.style.position = 'fixed';
+        star.style.top = pos.top;
+        star.style.left = pos.left;
+        star.style.width = '8px';
+        star.style.height = '8px';
+        star.style.background = '#FFD966';
+        star.style.borderRadius = '50%';
+        star.style.boxShadow = '0 0 6px #ffb347';
+        star.style.zIndex = '5';
+        star.style.pointerEvents = 'none';
+        document.body.appendChild(star);
+    });
+    
+    // 制作几个会缓慢漂浮的气球圆点 (增加动态气球标志感)
+    const balloonFloaters = [
+        { right: '5%', bottom: '15%', delay: '0s', size: '45px' },
+        { left: '2%', top: '12%', delay: '1.2s', size: '55px' },
+        { right: '12%', top: '70%', delay: '0.7s', size: '38px' },
+        { left: '8%', bottom: '30%', delay: '2s', size: '48px' }
+    ];
+    balloonFloaters.forEach(ball => {
+        const balloonDiv = document.createElement('div');
+        balloonDiv.style.position = 'fixed';
+        balloonDiv.style.pointerEvents = 'none';
+        balloonDiv.style.zIndex = '1';
+        balloonDiv.style.opacity = '0.3';
+        balloonDiv.style.filter = 'blur(0.5px)';
+        balloonDiv.style.animation = 'floatAround 9s infinite ease-in-out';
+        balloonDiv.style.animationDelay = ball.delay;
+        if (ball.right) balloonDiv.style.right = ball.right;
+        if (ball.left) balloonDiv.style.left = ball.left;
+        if (ball.bottom) balloonDiv.style.bottom = ball.bottom;
+        if (ball.top) balloonDiv.style.top = ball.top;
+        balloonDiv.style.width = ball.size;
+        balloonDiv.style.height = ball.size;
+        // 模仿气球三个小圆点标志
+        balloonDiv.innerHTML = `<svg viewBox="0 0 60 60" width="100%" height="100%"><circle cx="30" cy="25" r="14" fill="#F7C6D9" stroke="#FF8DA1" stroke-width="1"/><circle cx="23" cy="32" r="7" fill="#B0E0FF"/><circle cx="37" cy="32" r="7" fill="#FCE38A"/><path d="M30 39 L28 52 M23 38 L20 48 M37 38 L40 48" stroke="#D97A63" stroke-width="1.2"/></svg>`;
+        document.body.appendChild(balloonDiv);
+    });
+
+    // 添加简单的手指轻触气球回馈效果 (移动端小彩蛋)
+    const balloonBadge = document.querySelector('.balloon-svg-container');
+    if (balloonBadge) {
+        balloonBadge.addEventListener('click', () => {
+            const originalTransform = balloonBadge.style.transform;
+            balloonBadge.style.transform = 'scale(1.2) rotate(5deg)';
+            setTimeout(() => {
+                balloonBadge.style.transform = originalTransform || 'scale(1)';
+            }, 280);
+            // 添加快乐提示效果
+            const toast = document.createElement('div');
+            toast.innerText = '🎈 爱你😘 💖';
+            toast.style.position = 'fixed';
+            toast.style.bottom = '30%';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = '#ff89a7';
+            toast.style.color = 'white';
+            toast.style.padding = '8px 20px';
+            toast.style.borderRadius = '60px';
+            toast.style.fontSize = '0.85rem';
+            toast.style.fontWeight = 'bold';
+            toast.style.zIndex = '999';
+            toast.style.boxShadow = '0 8px 20px rgba(0,0,0,0.2)';
+            toast.style.whiteSpace = 'nowrap';
+            toast.style.fontFamily = "'Quicksand',sans-serif";
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 1500);
+        });
+    }
+    
+    // 信件内容轻微呼吸感 (让卡通信更生动)
+    const letterCard = document.querySelector('.valentine-letter');
+    if (letterCard) {
+        let scaleVal = 1;
+        setInterval(() => {
+            scaleVal = scaleVal === 1 ? 1.003 : 1;
+            letterCard.style.transform = `scale(${scaleVal}) translateY(${scaleVal === 1 ? '0px' : '-2px'})`;
+        }, 2200);
+    }
+</script>
+
+</body>
+</html>
