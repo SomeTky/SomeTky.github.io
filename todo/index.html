@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f8">
+<title>进行中的事 · Todo</title>
+<style>
+  :root{
+    --bg:#f7f7f8;
+    --card:#ffffff;
+    --text:#16181d;
+    --muted:#8b8f99;
+    --line:#e8e8ec;
+    --accent:#2f6bff;
+    --accent-soft:#eaf0ff;
+    --danger:#e5484d;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(16,20,30,.04), 0 8px 24px -12px rgba(16,20,30,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0e0f12;
+      --card:#17191e;
+      --text:#eceef2;
+      --muted:#7f8592;
+      --line:#262931;
+      --accent:#6b93ff;
+      --accent-soft:#1b2436;
+      --danger:#ff6369;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:0 16px calc(48px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:680px;margin:0 auto}
+
+  /* header */
+  header{padding:28px 2px 14px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .back{
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--muted);text-decoration:none;font-size:13px;
+    padding:6px 10px 6px 6px;border-radius:10px;transition:.15s;
+  }
+  .back:hover{color:var(--text);background:var(--card)}
+  h1{font-size:26px;line-height:1.2;letter-spacing:-.02em;margin:16px 0 4px;font-weight:650}
+  .meta{font-size:13px;color:var(--muted);margin:0}
+
+  /* add form */
+  .add{display:flex;gap:8px;margin:20px 0 14px}
+  .add input{
+    flex:1;min-width:0;height:48px;padding:0 16px;
+    font-size:15px;font-family:inherit;color:var(--text);
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    outline:none;transition:.18s;box-shadow:var(--shadow);
+  }
+  .add input::placeholder{color:var(--muted)}
+  .add input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .add button{
+    width:48px;height:48px;flex:none;border-radius:14px;border:1px solid transparent;
+    background:var(--accent);color:#fff;font-size:22px;line-height:1;cursor:pointer;
+    transition:.15s;box-shadow:var(--shadow);
+  }
+  .add button:hover{filter:brightness(1.06)}
+  .add button:active{transform:scale(.96)}
+
+  /* tabs */
+  .tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);padding:4px;border-radius:12px;margin-bottom:18px;box-shadow:var(--shadow)}
+  .tab{
+    flex:1;appearance:none;border:0;background:transparent;color:var(--muted);
+    font:inherit;font-size:13px;padding:8px 4px;border-radius:9px;cursor:pointer;transition:.15s;
+  }
+  .tab.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+  /* card */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 14px 10px;margin-bottom:12px;box-shadow:var(--shadow);
+    transition:border-color .18s;
+  }
+  .card:hover{border-color:color-mix(in srgb,var(--line) 60%,var(--muted))}
+  .card.done{opacity:.62}
+  .head{display:flex;align-items:flex-start;gap:8px}
+  .chev{
+    flex:none;width:26px;height:26px;margin-top:1px;border:0;background:transparent;color:var(--muted);
+    cursor:pointer;border-radius:8px;display:grid;place-items:center;transition:.15s;
+  }
+  .chev:hover{background:var(--bg);color:var(--text)}
+  .chev svg{transition:transform .2s}
+  .card.collapsed .chev svg{transform:rotate(-90deg)}
+  .ptitle{
+    flex:1;min-width:0;font-size:15.5px;font-weight:600;line-height:1.4;margin:3px 0 0;
+    cursor:text;word-break:break-word;padding-right:2px;
+  }
+  .card.done .ptitle{text-decoration:line-through;text-decoration-color:var(--muted)}
+  .ptitle-input{
+    flex:1;min-width:0;font:inherit;font-size:15.5px;font-weight:600;color:var(--text);
+    background:var(--bg);border:1px solid var(--accent);border-radius:8px;padding:2px 8px;margin-top:1px;outline:none;
+  }
+  .count{flex:none;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:6px}
+  .del{
+    flex:none;width:26px;height:26px;border:0;border-radius:8px;background:transparent;color:var(--muted);
+    font-size:17px;line-height:1;cursor:pointer;transition:.15s;display:grid;place-items:center;
+  }
+  .del:hover{background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger)}
+
+  .bar{height:3px;border-radius:99px;background:var(--line);margin:11px 0 2px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .28s ease}
+  .card.done .bar i{background:var(--muted)}
+
+  .steps{list-style:none;margin:6px 0 0;padding:0}
+  .step{display:flex;align-items:flex-start;gap:10px;padding:8px 2px;border-radius:10px}
+  .step + .step{border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+  .box{
+    flex:none;width:20px;height:20px;margin-top:1px;border-radius:50%;
+    border:1.6px solid color-mix(in srgb,var(--muted) 55%,transparent);background:transparent;
+    cursor:pointer;display:grid;place-items:center;transition:.15s;padding:0;
+  }
+  .box:hover{border-color:var(--accent)}
+  .box svg{opacity:0;transform:scale(.6);transition:.15s;color:#fff}
+  .step.done .box{background:var(--accent);border-color:var(--accent)}
+  .step.done .box svg{opacity:1;transform:scale(1)}
+  .step .txt{flex:1;min-width:0;font-size:14.5px;line-height:1.45;word-break:break-word;padding-top:1px}
+  .step.done .txt{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+  .rm{
+    flex:none;width:24px;height:24px;border:0;background:transparent;color:var(--muted);
+    border-radius:7px;font-size:15px;line-height:1;cursor:pointer;opacity:0;transition:.15s;display:grid;place-items:center;
+  }
+  .card:hover .rm,.rm:focus-visible{opacity:1}
+  .rm:hover{color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,transparent)}
+  @media (hover:none){.rm{opacity:.5}}
+
+  .addstep{display:flex;align-items:center;gap:8px;margin-top:6px;padding:2px 0 4px}
+  .addstep input{
+    flex:1;min-width:0;height:36px;padding:0 2px;font:inherit;font-size:14px;color:var(--text);
+    background:transparent;border:0;border-bottom:1px solid transparent;outline:none;transition:.15s;
+  }
+  .addstep input::placeholder{color:var(--muted)}
+  .addstep input:focus{border-bottom-color:var(--line)}
+  .addstep button{
+    flex:none;width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--card);
+    color:var(--muted);font-size:17px;line-height:1;cursor:pointer;transition:.15s;
+  }
+  .addstep button:hover{color:var(--accent);border-color:var(--accent)}
+
+  .card.collapsed .bar,.card.collapsed .steps,.card.collapsed .addstep{display:none}
+
+  /* empty */
+  .empty{text-align:center;padding:56px 16px;color:var(--muted);font-size:14px}
+  .empty b{display:block;font-size:30px;margin-bottom:10px;font-weight:400;opacity:.75}
+
+  /* toast */
+  .toast{
+    position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translate(-50%,16px);
+    display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:12px;
+    background:#16181d;color:#fff;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.22);
+    opacity:0;pointer-events:none;transition:.22s;z-index:9;max-width:calc(100vw - 40px);
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .toast button{appearance:none;border:0;background:transparent;color:#8fb0ff;font:inherit;font-weight:600;cursor:pointer;padding:2px 0}
+  @media (prefers-color-scheme: dark){ .toast{background:#2a2d35} }
+
+  @media (max-width:480px){
+    body{padding:0 13px calc(40px + env(safe-area-inset-bottom))}
+    header{padding-top:18px}
+    h1{font-size:22px;margin-top:12px}
+    .card{padding:12px 12px 8px;border-radius:14px}
+    .ptitle{font-size:15px}
+    .step .txt{font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <a class="back" href="../">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        首页
+      </a>
+    </div>
+    <h1>进行中的事</h1>
+    <p class="meta" id="meta">还没有内容</p>
+  </header>
+
+  <form class="add" id="addForm" autocomplete="off">
+    <input id="newTitle" placeholder="现在在做什么？" maxlength="80" enterkeyhint="done">
+    <button type="submit" aria-label="创建">+</button>
+  </form>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-filter="all">全部</button>
+    <button class="tab" data-filter="doing">进行中</button>
+    <button class="tab" data-filter="done">已完成</button>
+  </nav>
+
+  <main id="list"></main>
+</div>
+
+<div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo" hidden>撤销</button></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var KEY = "todo.v1";
+  var uid = function () {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  };
+
+  var state = load();
+  var filter = "all";
+  var undoAction = null;
+  var toastTimer = null;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return { items: [] };
+      var data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.items)) return { items: [] };
+      data.items = data.items.filter(function (it) { return it && typeof it.title === "string"; });
+      data.items.forEach(function (it) {
+        it.id = it.id || uid();
+        it.steps = Array.isArray(it.steps) ? it.steps : [];
+        it.steps.forEach(function (s) { s.id = s.id || uid(); s.done = !!s.done; });
+        it.open = it.open !== false;
+      });
+      return data;
+    } catch (e) {
+      return { items: [] };
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) { /* 隐私模式下忽略 */ }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function find(id) {
+    for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i];
+    return null;
+  }
+
+  function isDone(it) {
+    return it.steps.length > 0 && it.steps.every(function (s) { return s.done; });
+  }
+
+  function visibleItems() {
+    return state.items.filter(function (it) {
+      if (filter === "doing") return !isDone(it);
+      if (filter === "done") return isDone(it);
+      return true;
+    });
+  }
+
+  var CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  var CHEV = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+
+  function render(focusStepFor) {
+    var list = document.getElementById("list");
+    var items = visibleItems();
+    var html = "";
+
+    items.forEach(function (it) {
+      var done = it.steps.filter(function (s) { return s.done; }).length;
+      var total = it.steps.length;
+      var pct = total ? Math.round((done / total) * 100) : 0;
+      var cls = "card" + (isDone(it) ? " done" : "") + (it.open ? "" : " collapsed");
+
+      html += '<section class="' + cls + '" data-id="' + it.id + '">';
+      html += '<div class="head">';
+      html += '<button class="chev" data-act="toggle" aria-label="展开/收起">' + CHEV + '</button>';
+      html += '<h2 class="ptitle" data-act="edit" title="点击修改名称">' + esc(it.title) + "</h2>";
+      if (total) html += '<span class="count">' + done + "/" + total + "</span>";
+      html += '<button class="del" data-act="del" aria-label="删除">×</button>';
+      html += "</div>";
+
+      if (total) html += '<div class="bar"><i style="width:' + pct + '%"></i></div>';
+
+      html += '<ul class="steps">';
+      it.steps.forEach(function (s) {
+        html += '<li class="step' + (s.done ? " done" : "") + '" data-step="' + s.id + '">';
+        html += '<button class="box" data-act="done" aria-label="切换完成">' + CHECK + "</button>";
+        html += '<span class="txt">' + esc(s.text) + "</span>";
+        html += '<button class="rm" data-act="rmstep" aria-label="删除步骤">×</button>';
+        html += "</li>";
+      });
+      html += "</ul>";
+
+      html += '<form class="addstep" data-id="' + it.id + '">';
+      html += '<input placeholder="' + (total ? "添加步骤…" : "写下第一个步骤…") + '" maxlength="120" enterkeyhint="done">';
+      html += '<button type="submit" aria-label="添加步骤">+</button>';
+      html += "</form>";
+      html += "</section>";
+    });
+
+    list.innerHTML = html;
+
+    if (!items.length) {
+      list.innerHTML = '<div class="empty"><b>◦</b>' +
+        (filter === "done" ? "还没有完成的事" : filter === "doing" ? "没有进行中的事" : "从上面添加第一件正在进行的事") +
+        "</div>";
+    }
+
+    var doing = 0, stepsLeft = 0;
+    state.items.forEach(function (it) {
+      if (!isDone(it)) doing++;
+      it.steps.forEach(function (s) { if (!s.done) stepsLeft++; });
+    });
+    document.getElementById("meta").textContent = state.items.length
+      ? doing + " 件进行中 · " + stepsLeft + " 个待完成步骤"
+      : "还没有内容";
+
+    if (focusStepFor) {
+      var f = list.querySelector('.addstep[data-id="' + focusStepFor + '"] input');
+      if (f) f.focus();
+    }
+  }
+
+  function toast(msg, undo, afterUndo) {
+    var el = document.getElementById("toast");
+    var btn = document.getElementById("toastUndo");
+    document.getElementById("toastMsg").textContent = msg;
+    undoAction = undo || null;
+    btn.hidden = !undo;
+    btn.onclick = function () {
+      if (undoAction) undoAction();
+      undoAction = null;
+      el.classList.remove("show");
+    };
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove("show"); }, undo ? 5000 : 2200);
+  }
+
+  /* ---- 操作 ---- */
+
+  document.getElementById("addForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var input = document.getElementById("newTitle");
+    var v = input.value.trim();
+    if (!v) { input.focus(); return; }
+    state.items.unshift({ id: uid(), title: v, createdAt: Date.now(), open: true, steps: [] });
+    save();
+    input.value = "";
+    render();
+  });
+
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    var t = e.target.closest(".tab");
+    if (!t) return;
+    filter = t.dataset.filter;
+    Array.prototype.forEach.call(this.querySelectorAll(".tab"), function (b) {
+      b.classList.toggle("on", b === t);
+    });
+    render();
+  });
+
+  document.getElementById("list").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    var card = e.target.closest(".card");
+    if (!card) return;
+    var item = find(card.dataset.id);
+    if (!item) return;
+    var act = btn.dataset.act;
+
+    if (act === "toggle") {
+      item.open = !item.open;
+      save();
+      render();
+
+    } else if (act === "edit") {
+      startEdit(card, item);
+
+    } else if (act === "del") {
+      var idx = state.items.indexOf(item);
+      state.items.splice(idx, 1);
+      save();
+      render();
+      toast("已删除「" + item.title + "」", function () {
+        state.items.splice(idx, 0, item);
+        save();
+        render();
+      });
+
+    } else if (act === "done") {
+      var stepId = btn.closest(".step").dataset.step;
+      item.steps.forEach(function (s) { if (s.id === stepId) s.done = !s.done; });
+      save();
+      render();
+
+    } else if (act === "rmstep") {
+      var li = btn.closest(".step");
+      var sid = li.dataset.step;
+      var i = -1;
+      item.steps.forEach(function (s, k) { if (s.id === sid) i = k; });
+      if (i < 0) return;
+      var removed = item.steps.splice(i, 1)[0];
+      save();
+      render();
+      toast("已删除步骤", function () {
+        item.steps.splice(i, 0, removed);
+        save();
+        render();
+      });
+    }
+  });
+
+  document.getElementById("list").addEventListener("submit", function (e) {
+    var form = e.target.closest(".addstep");
+    if (!form) return;
+    e.preventDefault();
+    var item = find(form.dataset.id);
+    if (!item) return;
+    var input = form.querySelector("input");
+    var v = input.value.trim();
+    if (!v) { input.focus(); return; }
+    item.steps.push({ id: uid(), text: v, done: false });
+    item.open = true;
+    save();
+    render(item.id);
+  });
+
+  function startEdit(card, item) {
+    var h = card.querySelector(".ptitle");
+    if (!h) return;
+    var input = document.createElement("input");
+    input.className = "ptitle-input";
+    input.value = item.title;
+    input.maxLength = 80;
+    h.replaceWith(input);
+    input.focus();
+    input.select();
+
+    var committed = false;
+    function commit() {
+      if (committed) return;
+      committed = true;
+      var v = input.value.trim();
+      if (v) item.title = v;
+      save();
+      render();
+    }
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") { ev.preventDefault(); input.blur(); }
+      else if (ev.key === "Escape") { committed = true; render(); }
+    });
+  }
+
+  /* 多标签页同步 */
+  window.addEventListener("storage", function (e) {
+    if (e.key !== KEY) return;
+    state = load();
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

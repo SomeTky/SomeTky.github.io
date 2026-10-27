@@ -1,48 +1,181 @@
 <!DOCTYPE html>
-<html lang="zh">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>这个其实不是一个网站</title>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background-color: #f9f9f9;
-        color: #333;
-        margin: 0;
-        padding: 20px;
-        text-align: center;
-      }
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fbfbfc">
+<title>这个其实不是一个网站</title>
+<style>
+  :root{
+    --bg:#fbfbfc;
+    --card:#ffffff;
+    --text:#15171c;
+    --muted:#8b8f99;
+    --line:#ececf0;
+    --accent:#2f6bff;
+    --tint:#f1f5ff;
+    --shadow:0 1px 2px rgba(16,20,30,.04);
+    --shadow-hover:0 2px 4px rgba(16,20,30,.05), 0 14px 32px -16px rgba(16,20,30,.22);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0d0e11;
+      --card:#16181d;
+      --text:#e9ebf0;
+      --muted:#7d8390;
+      --line:#232630;
+      --accent:#6b93ff;
+      --tint:#1a2233;
+      --shadow:0 1px 2px rgba(0,0,0,.35);
+      --shadow-hover:0 2px 4px rgba(0,0,0,.4), 0 14px 32px -16px rgba(0,0,0,.8);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:0 18px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:64px 0 72px}
 
-      h1 {
-        font-size: 2rem;
-        margin-bottom: 30px;
-        color: #2c3e50;
-      }
+  header{margin-bottom:36px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12px;letter-spacing:.04em;color:var(--muted);
+    padding:5px 11px;border:1px solid var(--line);border-radius:99px;background:var(--card);
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.16)}
+  h1{
+    font-size:34px;line-height:1.25;letter-spacing:-.03em;font-weight:680;
+    margin:18px 0 10px;
+  }
+  header p{margin:0;color:var(--muted);font-size:14.5px;max-width:44ch}
 
-      a {
-        display: block;
-        margin: 12px auto;
-        padding: 12px 24px;
-        width: fit-content;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        transition: background-color 0.2s;
-      }
+  .group-title{
+    font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+    margin:38px 0 12px;padding-left:2px;font-weight:600;
+  }
 
-      a:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>欢迎您</h1>
-    <a href="tools/easydic.html">全英词典</a>
-    <a href="tools/calculateWords.html">文字计数器</a>
-    <a href="tools/aToBInText.html">字符替换工具</a>
-    <a href="tools/memo.html">备忘录</a>
-    <a href="tools/deleteEnter.html">回车删除工具</a>
-  </body>
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+
+  a.card{
+    display:flex;align-items:center;gap:13px;
+    padding:15px 16px;border-radius:14px;text-decoration:none;color:inherit;
+    background:var(--card);border:1px solid var(--line);
+    transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  }
+  a.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:transparent}
+  a.card:active{transform:translateY(0)}
+  .ico{
+    flex:none;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+    font-size:18px;background:var(--tint);line-height:1;
+  }
+  .body{min-width:0;flex:1}
+  .name{display:block;font-size:14.5px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .desc{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+  .arrow{flex:none;color:var(--muted);opacity:0;transform:translateX(-3px);transition:.16s}
+  a.card:hover .arrow{opacity:1;transform:translateX(0)}
+
+  /* 特色卡片 */
+  a.feature{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 18px;margin-bottom:4px;
+    border-radius:16px;text-decoration:none;color:inherit;
+    background:linear-gradient(135deg,var(--tint),var(--card) 78%);
+    border:1px solid var(--line);
+    transition:transform .16s ease, box-shadow .16s ease;
+  }
+  a.feature:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+  a.feature .ico{width:46px;height:46px;border-radius:13px;font-size:21px;background:var(--card);box-shadow:var(--shadow)}
+  a.feature .name{font-size:16px}
+  a.feature .desc{font-size:13px}
+  .badge{
+    flex:none;font-size:11px;font-weight:600;color:var(--accent);
+    background:color-mix(in srgb,var(--accent) 10%,transparent);
+    padding:3px 8px;border-radius:99px;
+  }
+
+  footer{margin-top:48px;color:var(--muted);font-size:12.5px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  @media (max-width:560px){
+    .wrap{padding:40px 0 56px}
+    h1{font-size:27px}
+    header{margin-bottom:28px}
+    .grid{grid-template-columns:1fr;gap:10px}
+    a.card{padding:13px 14px}
+    a.feature{padding:15px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    a.card,a.feature,.arrow{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow"><i class="dot"></i> 全部数据只存在你的浏览器里</span>
+    <h1>这个其实不是一个网站</h1>
+    <p>一些自己用的小工具，打开就能用，没有账号，没有追踪。</p>
+  </header>
+
+  <a class="feature" href="todo/">
+    <span class="ico">🗂</span>
+    <span class="body">
+      <span class="name">进行中的事 <span class="badge">新增</span></span>
+      <span class="desc">同时记录多件事，逐条添加、完成、删除步骤</span>
+    </span>
+    <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+  </a>
+
+  <div class="group-title">工具</div>
+  <div class="grid">
+    <a class="card" href="tools/memo.html">
+      <span class="ico">📝</span>
+      <span class="body"><span class="name">备忘录</span><span class="desc">支持置顶的本地笔记本</span></span>
+    </a>
+    <a class="card" href="tools/diary.html">
+      <span class="ico">📔</span>
+      <span class="body"><span class="name">日记本</span><span class="desc">按日期写给自己的话</span></span>
+    </a>
+    <a class="card" href="tools/easydic.html">
+      <span class="ico">🔍</span>
+      <span class="body"><span class="name">全英词典</span><span class="desc">英文查词，快速释义</span></span>
+    </a>
+    <a class="card" href="tools/calculateWords.html">
+      <span class="ico">🔢</span>
+      <span class="body"><span class="name">文字计数器</span><span class="desc">统计字数与字符</span></span>
+    </a>
+    <a class="card" href="tools/aToBInText.html">
+      <span class="ico">🔁</span>
+      <span class="body"><span class="name">字符替换</span><span class="desc">批量替换文本中的字符</span></span>
+    </a>
+    <a class="card" href="tools/deleteEnter.html">
+      <span class="ico">⏎</span>
+      <span class="body"><span class="name">回车删除</span><span class="desc">一键去掉多余的换行</span></span>
+    </a>
+  </div>
+
+  <div class="group-title">其他</div>
+  <div class="grid">
+    <a class="card" href="src/lessons.html">
+      <span class="ico">📅</span>
+      <span class="body"><span class="name">2026 春季课表</span><span class="desc">这学期的安排</span></span>
+    </a>
+    <a class="card" href="src/zhaoponiang.html">
+      <span class="ico">💌</span>
+      <span class="body"><span class="name">这是一个什么呀</span><span class="desc">点开就知道了</span></span>
+    </a>
+  </div>
+
+  <footer>
+    <span>没有服务器，数据存在 localStorage</span>
+    <span>© <span id="y">2026</span></span>
+  </footer>
+</div>
+<script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+</body>
 </html>
